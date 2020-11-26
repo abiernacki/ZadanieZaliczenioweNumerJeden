@@ -4,15 +4,15 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.api.java.eo.Se;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 
+
+import java.util.AbstractList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -111,21 +111,23 @@ public class CreateNewAddress {
     public void sprawdzenieCzyDaneWPodanymAdresieSaPoprawne() {
 
         List<WebElement> addressElements = driver.findElements(By.tagName("article"));
-//        WebElement element = null;
-
-
-//        for (WebElement addressElement : addressElements) {
-//            //System.out.println(addressElement.getText());
-//            if (addressElement.getText().contains(generatedAlias)) {
-//                System.out.println(addressElement.getText());
-//                element = addressElement;
-//            }
-//        }
 
         String addressText = addressElements.get(addressElements.size()-1).getText();
         Assert.assertTrue(addressText.contains("ul. Rakowiecka 15"));
         Assert.assertTrue(addressText.contains("Warszawa"));
         Assert.assertTrue(addressText.contains("02-432"));
         Assert.assertTrue(addressText.contains("111222333"));
+
+
+        // Usuwanie ostatnio dodanego adresu
+        List<WebElement> deleteAddresses = driver.findElements(By.cssSelector("a[data-link-action='delete-address']"));
+        deleteAddresses.get(deleteAddresses.size()-1).click();
+
+
+        // Sprawdzenie czy adres zostal usuniety
+        List<WebElement> hawMany = driver.findElements(By.tagName("article"));
+        addressText = hawMany.get(hawMany.size()-1).getText();
+        Assert.assertFalse(addressText.contains(generatedAlias));
+
     }
 }
